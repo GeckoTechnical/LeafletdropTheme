@@ -1,0 +1,42 @@
+﻿
+@using Orchard.ContentManagement;
+@using Orchard.Widgets.Models;
+@{
+    dynamic editor = Model.Editor;
+
+    if (TempData.ContainsKey("CustomFormWidget.InvalidCustomFormState"))
+    {
+        editor = TempData["CustomFormWidget.InvalidCustomFormState"];
+    }
+
+    // remove default Save/Publish buttons
+    editor.Zones["Sidebar"].Items.Clear();
+}
+
+
+@using (Html.BeginFormAntiForgeryPost(Url.Action("Create", "Item", new { area = "Orchard.CustomForms", id = Model.ContentItem.Id, @class = "form_main" })))
+{
+    @*@Html.ValidationSummary();*@
+    @Html.Hidden("returnUrl", Request.RawUrl);
+    <div class="contact-info-box">
+        <h4 class="header_form">Message Us</h4>
+        <div class="form-group">
+            <label for="ContactUs_Name_Text" shape-id="13">Name:*</label>
+            <input class="form-control" id="ContactUs_Name_Text" placeholder="Your name" name="ContactUs.Name.Text" type="text" value="" required="required">
+
+        </div>
+        <div class="form-group">
+            <label for="ContactUs_Email_Text" shape-id="14">Email:*</label>
+            <input class="form-control" id="ContactUs_Email_Text" placeholder="Your email" name="ContactUs.Email.Text" type="email" value="" required="required">
+        </div>
+        <div class="form-group">
+            <label for="ContactUs_Telephone_Text" shape-id="15">Telephone:*</label>
+            <input class="form-control" id="ContactUs_Telephone_Text" placeholder="Your number" name="ContactUs.Telephone.Text" type="text" value="" required="required">
+        </div>
+        <div class="form-group">
+            <label for="ContactUs_Yourquery_Text" shape-id="16">Your query:*</label>
+            <textarea class="form-control" cols="80" placeholder="How can we help?" id="ContactUs_Yourquery_Text" name="ContactUs.Yourquery.Text" rows="10" required="required"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default btn-main btn-lg" name="submit.Save" value="submit.Save">@T("SEND MESSAGE")</button>
+    </div>
+}

@@ -1,0 +1,206 @@
+﻿@using Orchard.ContentPicker.Fields
+@using Orchard.ContentManagement;
+@using Orchard.ContentManagement;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+
+@{
+    var item = Model;
+    var contentItems = (ContentItem)Model.ContentItem;
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Model.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+    var title = Model.ContentItem.TitlePart;
+    var date = Model.ContentItem.CommonPart;
+    var body = Model.ContentItem.BlogPostPart;
+
+    TextField category = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Category");
+    TextField discription = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Discription");
+    TextField authorName = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "AuthorName");
+
+    MediaLibraryPickerField bannerImage = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "Image");
+    MediaLibraryPickerField authorImage = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "AuthorImage");
+
+    LinkField twitter = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "Twitter");
+    LinkField facebook = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "Facebook");
+    LinkField googlePlus = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "GooglePlus");
+    LinkField linkdIn = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "Linkdin");
+
+    TextField FooterSignupHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterHeader");
+    BooleanField showsignUpButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    TextField SignupButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterSignupButtonText");
+
+    TextField RelatedTopicText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "RelatedTopicText");
+    var contentpickerFields = FieldRender.Get<ContentPickerField>(contentParts, FieldType.ContentPickerField, "RelatedTopics");
+
+    //var contentpickerFields = FieldRender.Get<ContentPickerField>(contentParts, FieldType.ContentPickerField, "RelatedTopics");
+    var contentsItems = contentpickerFields.ContentItems;
+
+    var imagePath = "";
+    if (bannerImage.MediaParts.Count() > 0)
+    {
+        imagePath = "background-image:url(" + bannerImage.FirstMediaUrl + ")";
+    }
+}
+@if (bannerImage.MediaParts.Count() > 0)
+{
+    <div class="contain">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="banner-boxmiddeel" style="@imagePath">
+                        <span class="topshadow"></span>
+                        <div class="contain_bannerheader">
+                            @if (!String.IsNullOrEmpty(category.Value))
+                            {
+                                <span>@Html.Raw(category.Value)</span>
+                            }
+                            <h1>@Html.Raw(title.Title)</h1>
+                            @*@if (date.PublishedUtc != null)
+                            {
+                                var Date = date.PublishedUtc.ToString("dd MMM yyyy");
+                                <span>@Html.Raw(Date)</span>
+                            }*@
+                        </div><!--contain_bannerheader-->
+                    </div>
+                    <!--banner-box-->
+                </div><!--col-xs-12-->
+            </div><!--row-->
+        </div><!--container-->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-xs-12">
+                    <div class="contain_supportdetails supportdetails_withbanner">
+                        <div class="box_blogline">
+                            @*<div class="profile-box">
+                                @if (authorImage.MediaParts.Count() > 0)
+                                {
+                                    <img src="@authorImage.FirstMediaUrl" alt="image" class="img-circle pull-left">
+                                }
+
+                                <span>@Html.Raw(authorName.Value)</span>
+                            </div>*@
+
+                            <div class="social-icon">
+                                <ul>
+                                    @if (twitter.Value != null)
+                                    {
+                                        <li><a href=@twitter.Value class="twi_icon" target="_blank"></a></li>   @*Twitter*@
+                                    }
+                                    @if (facebook.Value != null)
+                                    {
+                                        <li><a href=@facebook.Value class="fb_icon" target="_blank"></a></li>   @*Facebook*@
+                                    }
+                                    @if (googlePlus.Value != null)
+                                    {
+                                        <li><a href=@googlePlus.Value class="gp_icon" target="_blank"></a></li>    @*Goole Plus*@
+                                    }
+                                    @if (linkdIn.Value != null)
+                                    {
+                                        <li><a href=@linkdIn.Value class="li_icon" target="_blank"></a></li>    @*Linkdin*@
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <!--box_blogline-->
+
+                        @Html.Raw(body.Text)
+                            <div class="box_ulsocial">
+                                <div class="social-icon bottom_icons">
+                                    <ul>
+                                        @if (twitter.Value != null)
+                                        {
+                                            <li><a href=@twitter.Value class="twi_icon" target="_blank"></a></li>   @*Twitter*@
+                                        }
+                                        @if (facebook.Value != null)
+                                        {
+                                            <li><a href=@facebook.Value class="fb_icon" target="_blank"></a></li>   @*Facebook*@
+                                        }
+                                        @if (googlePlus.Value != null)
+                                        {
+                                            <li><a href=@googlePlus.Value class="gp_icon" target="_blank"></a></li>    @*Goole Plus*@
+                                        }
+                                        @if (linkdIn.Value != null)
+                                        {
+                                            <li><a href=@linkdIn.Value class="li_icon" target="_blank"></a></li>    @*Linkdin*@
+                                        }
+
+                                    </ul>
+                                </div><!--social-icon-->
+
+                            </div><!--box_ulsocial-->
+                        
+                    </div>
+
+                </div><!--col-md-10 col-md-offset-1 col-xs-12-->
+                <div class="col-xs-12 hidden-xs">
+                    <hr>
+                </div>
+            </div><!-- row -->
+            <div class="blog_main">
+                @if (contentsItems.ToString().Length > 0)
+                {
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="titel-fechers">
+                                    <h1> @RelatedTopicText.Value </h1>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @foreach (var items in contentsItems)
+                            {
+                                var parts = items.Parts;
+                                var contentsParts = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                                TextField categorys = FieldRender.Get<TextField>(contentsParts, FieldType.TextField, "Category");
+                                TextField discriptions = FieldRender.Get<TextField>(contentsParts, FieldType.TextField, "Discription");
+                                MediaLibraryPickerField ListingPageImage = FieldRender.Get<MediaLibraryPickerField>(contentsParts, FieldType.MediaLibraryPickerField, "Image");
+                                var titlesPart = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.Core.Title.Models.TitlePart").ToList();
+                                var pageTitle = titlesPart[0].As<TitlePart>();
+
+                                var urlHelper = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+                                var linkUrl = urlHelper.ItemDisplayUrl(items);
+
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <figure class="blog-box">
+                                        <a href="@linkUrl">
+                                            <img src="@ListingPageImage.FirstMediaUrl" alt="case-image" class="ie-fix">
+                                            <figcaption>
+                                                <span class="blogbox_title">@Html.Raw(categorys.Value)</span>
+                                                <h4>@(pageTitle.Title == null ? "" : pageTitle.Title)</h4>
+                                                <p>@Html.Raw(discriptions.Value)</p>
+                                            </figcaption><!--figcaption-->
+                                        </a>
+                                    </figure><!--figure-->
+                                </div><!--col-lg-4-->
+                            }
+                        </div><!--row-->
+
+                    </div><!--container-->
+            <!--End case studies-->
+                }
+            </div>
+        </div><!--container-->
+    </div><!--contain-->
+    <div class="shinupboxmain">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="contain_shinupbox">
+                        <p>@FooterSignupHeader.Value</p>
+                        @if (showsignUpButton.Value == true)
+                        {
+                            <a href="@Url.Content("/Users/Account/Register")" class="btn btn-default btn-main btn-lg">@SignupButtonText.Value</a>
+                        }
+                    </div>
+                </div><!-- Col-xs-12 -->
+
+            </div><!-- Row -->
+        </div><!-- Container -->
+    </div>
+
+}

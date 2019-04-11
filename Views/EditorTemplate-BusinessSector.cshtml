@@ -1,0 +1,26 @@
+@using Orchard.Utility.Extensions;
+@using System.Linq;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@{ 
+    //var item = Model;
+    List<Orchard.ContentManagement.ContentPart> contentParts = new List<Orchard.ContentManagement.ContentPart>();
+    contentParts.Add(Model.ContentPart);
+    EnumerationField businessSector = FieldRender.Get<EnumerationField>(contentParts, FieldType.EnumerationField, "BusinessSector");
+    Dictionary<String, String> opt = businessSector.PartFieldDefinition.Settings;
+    string[] options = (!String.IsNullOrWhiteSpace(opt["EnumerationFieldSettings.Options"])) ? opt["EnumerationFieldSettings.Options"].Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None) : new string[] { T("Select an option").ToString() };
+}
+<div class="form-group">
+    <label for="business">Business Sector</label>
+    <select class="form-control" id="UserCustomPart_BusinessSector_Value" name="UserCustomPart.BusinessSector.Value">
+        @for (int i = 0; i < options.Length; i++)
+        {
+            <option value="@options[i]">@options[i]</option>
+        }
+    </select>
+</div>

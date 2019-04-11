@@ -1,0 +1,194 @@
+﻿@if (WorkContext.CurrentUser != null)
+{
+    var impersonationCookie = Request.Cookies.Get("Impersonation");
+
+    <header class="adminheader">
+        <nav class="navbar" style="margin: 0px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <a class="navbar-toggle slidebartoggle" id="slidebartoggle"></a>
+                            <a class="navbar-brand logo" href="@Url.Content("~/")"><img src="@Url.Content(Html.ThemePath(WorkContext.CurrentTheme, "/styles/img/logo.png"))" alt="logo" /></a>
+                        </div>
+                        <!--  </div> -->
+                        <!-- Destop Menu  -->
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="navbar hidden-xs" style="margin-top:10px;">
+                            <ul class="nav navbar-nav">
+                                @foreach (var itm in Model.Menu)
+                                {
+                                    <li><a href="@itm.Href">@itm.Content.MenuText</a></li>
+                                }
+                            </ul>
+                            @if (impersonationCookie != null)
+                            {
+                                <a href="@Url.Content("~/Users/Account/LogOff")" class="btnadminlink" style="margin-top: 4px">@T("STOP IMPERSONATING")</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Content("~/Users/Account/LogOff")" class="btnadminlink" style="margin-top: 4px">@T("SIGN OUT")</a>
+                            }
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!--col-md-10-->
+                    <!--end  Destop Menu  -->
+                    <div class="mobilenavtabmain admin_mobile-menu" id="mobilenavtab">
+                        <div class="mobilenav">
+                            <div class="mobilemenuheader">
+                                <a href="#" id="slidebartoggle2" class="menuclseicon" aria-label="Close menu"></a>
+                            </div>
+                            <ul class="nav nav-pills nav-stacked">
+                                @foreach (var itm in Model.Menu)
+                                {
+                                    <li><a href="@itm.Href">@itm.Content.MenuText</a></li>
+                                }
+                                <li>
+                                    @if (impersonationCookie != null)
+                                    {
+                                        <a href="@Url.Content("~/Users/Account/LogOff")">Stop impersonating</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Content("~/Users/Account/LogOff")">Sign out</a>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                        <!--mobilenav-->
+                    </div>
+                    <!-- col-xs-12 -->
+                </div>
+                <!-- row -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </header>
+}
+else
+{
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 col-xs-12">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <a class="navbar-toggle slidebartoggle" id="slidebartoggle"></a>
+                            <a class="navbar-brand logo" href="@Url.Content("~/")">
+                                <img src="@Url.Content(Html.ThemePath(WorkContext.CurrentTheme, "/styles/img/logo.png"))" alt="logo">
+                            </a>
+                        </div>
+                    </div>
+                    <!--col-md-2-->
+                    <!-- Destop Menu  -->
+                    <div class="col-md-10 col-xs-12 hidden-xs">
+                        <!--Collect the nav links, forms, and other content for toggling-->
+                        <div class="navbar-right">
+                            <ul class="nav navbar-nav">
+                                @foreach (var itm in Model.Menu)
+                                {
+                                    if ((string)itm.Content.MenuText.ToUpper() == "SIGN UP")
+                                    {
+                                        string bodyHtml = itm.Content.BodyPart.Text.ToString();
+                                        var body = new HtmlString(Html.Excerpt(bodyHtml, 200).ToString().Replace(Environment.NewLine, "</p>" + Environment.NewLine + "<p>"));
+                                        <a href="@Url.Content("~/Users/Account/Register")" class="btn btn-default btn-main btn-small">@body</a>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="@itm.Href">@itm.Content.MenuText</a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <!--/.navbar-collapse-->
+                    </div>
+                    <!--col-md-10-->
+                    <!--end  Destop Menu-->
+                    <div class="mobilenavtabmain" id="mobilenavtab">
+                        <div class="mobilenav">
+                            <div class="mobilemenuheader">
+                                <a href="javascript:void(0)" id="slidebartoggle2" class="menuclseicon" aria-label="Close menu"></a>
+                            </div>
+                            <div class="mobilemenuheader">
+                                @foreach (var itm in Model.Menu)
+                                {
+                                    if ((string)itm.Content.MenuText.ToUpper() == "SIGN UP")
+                                    {
+                                        string bodyHtml = itm.Content.BodyPart.Text.ToString();
+                                        var body = new HtmlString(Html.Excerpt(bodyHtml, 200).ToString().Replace(Environment.NewLine, "</p>" + Environment.NewLine + "<p>"));
+                                        <a href="@Url.Content("~/Users/Account/Register")" class="btn btn-default btn-main btn-lg">@body</a>
+                                    }
+                                }
+                            </div>
+                            <ul class="nav nav-pills nav-stacked">
+                                @{
+                                    string[] DefaultMenu = "LOG IN,WHY USE YOURDROP?,PRICING,BLOG,CASE STUDIES,SUPPORT,CONTACT US".Split(',');
+                                    for (int i = 0; i < DefaultMenu.Length; i++)
+                                    {
+                                        foreach (var itm in Model.Menu)
+                                        {
+                                            if ((string)itm.Content.MenuText.ToUpper() == "SIGN UP") { continue; }
+                                            if ((string)itm.Content.MenuText.ToUpper() == DefaultMenu[i])
+                                            {
+                                                <li><a href="@itm.Href">@itm.Text.Text</a></li>
+                                            }
+                                        }
+                                        if (i == 2)
+                                        {
+                                            <li role="separator" class="divider"></li>
+                                        }
+                                    }
+                                    foreach (var itm in Model.Menu)
+                                    {
+                                        if ((string)itm.Content.MenuText.ToUpper() == "SIGN UP") { continue; }
+                                        bool addInMenu = true;
+                                        for (int i = 0; i < DefaultMenu.Length; i++)
+                                        {
+                                            if ((string)itm.Content.MenuText.ToUpper() == DefaultMenu[i])
+                                            {
+                                                addInMenu = false;
+                                            }
+                                        }
+                                        if (addInMenu)
+                                        {
+                                            <li><a href="@itm.Href">@itm.Content.MenuText</a></li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <!--mobilenav-->
+                    </div>
+                    <!-- col-xs-12 -->
+                </div>
+                <!-- row -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </header>
+}
+
+<script type="text/javascript">
+
+	var referer = "@Session["Referer"]";
+	var link;
+	switch (referer.toLowerCase().trim()) {
+		case "gecko":
+			link = "home-page-gecko";
+			break;
+		default:
+			link = "@Url.Content("~/")";
+			break;
+	}
+
+	//Push elements into array so that they can be filtered
+	var elements = [];
+	elements.push(document.getElementsByClassName("logo"));
+	elements.filter(function (e) { return e.item.name === "a" });
+	for (var x = 0; x < elements.length; x++) {
+		elements[0][x].setAttribute("href", link);
+	}
+</script>

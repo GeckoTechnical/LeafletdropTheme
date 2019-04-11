@@ -1,0 +1,97 @@
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@using Orchard.ContentPicker;
+@using Orchard.ContentManagement.MetaData;
+@using Orchard.ContentManagement.MetaData.Models;
+@using Orchard.ContentPicker.Settings;
+@using Orchard.ContentPicker.Fields;
+
+@{
+    var itm = Model;
+    var listingParts = Model.ContentItem.Parts;
+    var contentItems = Model.Items;
+
+    var projectionParts = ((List<Orchard.ContentManagement.ContentPart>)listingParts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Model.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+    var title = Model.ContentItem.TitlePart;
+
+    TextField subTitle = FieldRender.Get<TextField>(projectionParts, FieldType.TextField, "Subtitle");
+    TextField FooterSignupHeader = FieldRender.Get<TextField>(projectionParts, FieldType.TextField, "FooterHeader");
+    BooleanField showsignUpButton = FieldRender.Get<BooleanField>(projectionParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    TextField SignupButtonText = FieldRender.Get<TextField>(projectionParts, FieldType.TextField, "FooterSignupButtonText");
+
+}
+<div class="contain">
+    <div class="page-header shadownone">
+        <h1>@title.Title</h1>
+        @if (!String.IsNullOrEmpty(subTitle.Value))
+        {
+            <span class="subheader_pageheader"> @subTitle.Value </span>
+        }
+    </div>
+    @if (contentItems.Count > 0)
+    {
+        <div class="container">
+            <div class="row">
+                @foreach (var item in contentItems)
+                {
+                    var itemContentParts = ((List<Orchard.ContentManagement.ContentPart>)item.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                    TextField clientName = FieldRender.Get<TextField>(itemContentParts, FieldType.TextField, "ClientName");
+                    var TitlePart = item.ContentItem.TitlePart;
+                    var AutorotetPart = item.ContentItem.AutoroutePart;
+                    MediaLibraryPickerField mediaPart = FieldRender.Get<MediaLibraryPickerField>(itemContentParts, FieldType.MediaLibraryPickerField, "ListingPageImage");
+                    var mediaPath = "";
+                    if (mediaPart.MediaParts.Count() > 0)
+                    {
+                        mediaPath = mediaPart.FirstMediaUrl;
+                    }
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 ">
+                        <a href="@Url.Content("~/")@AutorotetPart.Path" class="casestudies-box">
+                            @if (mediaPath != "")
+                            {
+                                <img src="@mediaPath" alt="logo" class="img-rounded" />
+                            }
+                            <span class="box_spn_casestudies">
+                                <h5>
+                                    @if (clientName.Value != null)
+                                    {
+                                        @clientName.Value.ToUpper()
+                                    }
+                                </h5>
+                                <p>
+                                    <strong>"@TitlePart.Title"</strong>
+                                </p>
+                                <span class="btn btn-default btn-main">READ CLIENT STORY</span>
+                            </span>
+                        </a>
+                        <!--figcaption-->
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    <!--shinupbox-->
+    <div class="shinupboxmain">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="contain_shinupbox">
+                        <p>@FooterSignupHeader.Value</p>
+                        @if (showsignUpButton.Value == true)
+                        {
+                            <a href="@Url.Content("Users/Account/Register")" class="btn btn-default btn-main btn-lg">@SignupButtonText.Value</a>
+                        }
+
+                    </div>
+                </div><!-- Col-xs-12 -->
+            </div><!-- Row -->
+        </div><!-- Container -->
+    </div><!--shinupbox-->
+    <!-- End shinupbox-->
+</div>

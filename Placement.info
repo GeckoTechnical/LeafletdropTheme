@@ -1,4 +1,4 @@
-<Placement>
+﻿<Placement>
   <!-- Customize where the shapes are rendered -->
 
   <!-- 
@@ -14,4 +14,6 @@
     <Place Parts_Common_Metadata="-"/>
   </Match>
 -->
+
+  <Place Parts_Fields_SubHeader="Group1:0" />
 </Placement>

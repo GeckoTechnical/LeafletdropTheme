@@ -1,0 +1,250 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
+<style>
+	.register-tooltip {
+		position: relative;
+		display: inline-block;
+		border-bottom: 1px dotted black;
+	}
+
+		.register-tooltip .register-tooltiptext {
+			visibility: hidden;
+			width: 375px;
+			background-color: black;
+			color: #fff;
+			text-align: center;
+			padding: 15px 0;
+			border-radius: 6px;
+			position: absolute;
+			z-index: 1;
+			top: -60px;
+			left: 200%;
+			text-align: left;
+		}
+
+		.register-tooltip:hover .register-tooltiptext {
+			visibility: visible;
+		}
+
+		.register-tooltip .register-tooltiptext::after {
+			content: " ";
+			position: absolute;
+			top: 50%;
+			right: 100%;
+			margin-top: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: transparent black transparent transparent;
+		}
+
+	.g-recaptcha {
+		width: 50%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#opt-error {
+		display: none;
+	}
+</style>
+
+@{Html.TitleForPage("Register to use Leafletdrop's Leaflet Distribution");}
+<meta name="title" content="Register to use Leafletdrop's Leaflet Distribution" />
+
+@if (WorkContext.CurrentUser != null)
+{
+	Response.Redirect("/my-dashboard");
+}
+<div class="contain">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
+				@*<form class="form_box signupform" role="form">*@
+				@Html.ValidationSummary(true, T("Account creation was unsuccessful. Please correct the errors and try again.").ToString(), new { @class = "validation-summary-errors alert alert-danger" })
+				@*@using (Html.BeginFormAntiForgeryPost(Url.Action("Register", new { ReturnUrl = Request.QueryString["ReturnUrl"] })))*@
+				@using (Html.BeginFormAntiForgeryPost())
+				{
+					<fieldset class="form_box signupform">
+						<p class="header_formsignup">Sign up to start creating your own personalised campaigns</p>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="forename">@T("Your Forename (*)")</label>
+									@Html.TextBox("forename", "", new { autofocus = "autofocus", @class = "form-control", id = "inputForename", @placeholder = "Enter your forename", required = true })
+									@Html.ValidationMessage("forename")
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="surname">@T("Your Surname (*)")</label>
+									@Html.TextBox("surname", "", new { autofocus = "autofocus", @class = "form-control", id = "inputSurname", @placeholder = "Enter your surname", required = true })
+									@Html.ValidationMessage("surname")
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="useremail">@T("Your Email (*)")</label>
+									@Html.TextBox("email", "", new { @class = "form-control", @placeholder = "Enter your email address", required = true, type = "Email" })
+									@Html.ValidationMessage("email")
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="selectSector">@T("Business Sector")</label>
+									<select class="form-control" id="selectSector">
+										<option value="Accommodation & Travel">Accommodation &amp; Travel</option>
+										<option value="Art & Entertainment">Art &amp; Entertainment</option>
+										<option value="Charity">Charity</option>
+										<option value="Education">Education</option>
+										<option value="Estate Agents">Estate Agents</option>
+										<option value="Fitness">Fitness</option>
+										<option value="Food & Drink">Food &amp; Drink</option>
+										<option value="Home Services">Home Services</option>
+										<option value="Motor & Transport">Motor &amp; Transport</option>
+										<option value="Retail">Retail</option>
+										<option value="Other">Other</option>
+										<option value="Agency">Agency</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="password">@T("Choose a Password (*)")</label>&nbsp;<div class="register-tooltip hidden-xs">
+										<div class="register-tooltiptext"><ul><li>Minimum number of characters required: 8</li><li>Require at least one uppercase character</li><li>Require at least one lowercase character</li><li>Require at least one digit</li><li>Password cannot contain username</li></ul></div>
+										<i class="fa fa-question-circle"></i>
+									</div>
+									@Html.Password("password", "", new { autofocus = "autofocus", @class = "form-control", @placeholder = "Enter a password", required = true })
+									@Html.ValidationMessage("password")
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="confirmpassword">@T("Confirm Password (*)")</label>
+									@Html.Password("confirmpassword", "", new { autofocus = "autofocus", @class = "form-control", @placeholder = "Confirm password", required = true })
+									@Html.ValidationMessage("confirmpassword")
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<div class="g-recaptcha" data-sitekey="6LfeizgUAAAAAP3TpshOOjEqO3Yq3haG2_dv5bDr"></div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label>We'd love to occasionally send you exclusive offers, voucher codes and the latest information about Leafletdrop by email. We always treat your personal details with the utmost care and will never pass on your details to other companies.<br /></label>
+									<div class="form-group">
+										<div class="checkboxmain">
+											<div>
+												<input name="inputEmailMarketing" id="inputEmailMarketingTrue" autocomplete="off" type="checkbox" value="true" />
+												<div class="btn-group">
+													<label for="inputEmailMarketingTrue">
+														<span class="fa fa-check-square fa-lg"></span>
+														<span class="fa fa-square-o fa-lg"></span>
+														<span class="content">Yes please, I'd like to hear about Leafletdrop offers and services by email</span>
+													</label>
+												</div>
+											</div>
+											<div>
+												<input name="inputEmailMarketing" id="inputEmailMarketingFalse" autocomplete="off" type="checkbox" value="false" />
+												<div class="btn-group">
+													<label for="inputEmailMarketingFalse">
+														<span class="fa fa-check-square fa-lg"></span>
+														<span class="fa fa-square-o fa-lg"></span>
+														<span class="content">No thanks, I don't want to hear about Leafletdrop offers and services by email</span>
+													</label>
+												</div>
+											</div>
+										</div>
+										<input id="emailMarketing" name="EmailMarketing" value="" type="hidden" />
+										<label><br />You can unsubscribe at any time via the My Details page. For further information on how your data is used and stored visit <a href="/privacy">Whistl's Privacy Policy.</a></label>
+									</div>
+								</div>
+								<div class="col-xs-12">
+									<div class="validation-summary-errors alert alert-danger" id="opt-error">Please select an email preference option.</div>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
+						<input id="businessSector" name="businessSector" type="hidden" />
+						<input id="emailUpdates" name="emailUpdates" value="false" type="hidden" />
+						<input id="UserCustomPart_YourForename_Text" name="UserCustomPart.YourForename.Text" type="hidden" />
+						<input id="UserCustomPart_YourSurname_Text" name="UserCustomPart.YourSurname.Text" type="hidden" />
+
+						<div class="form-group">
+							<button class="btn btn-default btn-main btn-lg" type="submit" id="submit-button">@T("SIGN UP FOR FREE")</button>
+							<!--Add link validate-login.html-->
+						</div>
+						<div class="form-group">
+							<a class="linkbox_form" href="@Url.Content("~/Users/Account/LogOn")">Already have an account? <strong>Log in</strong></a>
+							<!--Add link login.html-->
+						</div>
+					</fieldset>
+				}
+				@*</form>*@
+			</div>
+
+		</div>
+	</div>
+</div>
+@using (Script.Foot())
+{
+	<script>
+		var marketingSelected = false;
+		$(document).ready(function () {
+			$("#businessSector").val($("#selectSector option:selected").val());
+			$("#emailUpdates").val(false);
+
+			//Prevent a checkbox being deslected by clicking on itself.
+			$("input[name=inputEmailMarketing]").click(function (e) {
+				if (!$(this).prop("checked")) {
+					e.preventDefault();
+				}
+			});
+
+			$("input[name=inputEmailMarketing]").change(function (e) {
+				marketingSelected = true;
+				$('#opt-error').hide();
+				if ($(this).val()) {
+					var currentId = $(this).attr("id");
+					$("input[name=inputEmailMarketing]").each(function () {
+						if ($(this).attr("id") != currentId) {
+							$(this).prop("checked", false);
+						}
+					});
+					$("#emailUpdates").val($(this).val());
+				}
+			});
+
+			$("#selectSector").change(function () {
+				$("#businessSector").val($("#selectSector option:selected").val());
+			});
+
+			$("#inputForename").change(function () {
+				$("#UserCustomPart_YourForename_Text").val($(this).val());
+			});
+
+			$("#inputSurname").change(function () {
+				$("#UserCustomPart_YourSurname_Text").val($(this).val());
+			});
+
+			$("#submit-button").click(function(e) {
+				if (!marketingSelected) {
+					e.preventDefault();
+					$('#opt-error').show();
+				}
+			});
+		});
+	</script>
+}

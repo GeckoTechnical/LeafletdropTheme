@@ -1,0 +1,103 @@
+﻿@using Orchard.ContentPicker.Fields
+@using Orchard.ContentPicker.Fields
+@using Orchard.Utility.Extensions;
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.Blogs.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@{
+    IEnumerable<object> blogPosts = Model.ContentItems;
+    Orchard.Blogs.Models.BlogPart blog = null;
+    foreach (var item in Model.ContentItems.Items)
+    {
+        if (item.Blog != null && blog == null)
+        {
+            blog = item.Blog;
+            break;
+        }
+    }
+    TextField subtitle = FieldRender.Get<TextField>(blog, FieldType.TextField, "BlogSubtitle");
+}
+@if (blogPosts == null || blogPosts.Count() < 1)
+{
+    <p>@T("There are no posts for this blog.")</p>
+}
+<div class="contain">
+    <div class="blog_main">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header shadownone">
+                        <h1> @blog.Name</h1>
+                        <span class="subheader_pageheader">@subtitle.Value</span>
+                    </div>
+                </div><!-- col-xs-12 -->
+            </div>
+
+            @{
+                int i = 1;
+
+                foreach (dynamic post in blogPosts)
+                {
+
+                    var itemContentParts = ((List<Orchard.ContentManagement.ContentPart>)post.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                    MediaLibraryPickerField mediaPart = FieldRender.Get<MediaLibraryPickerField>(itemContentParts, FieldType.MediaLibraryPickerField, "Image");
+                    var TitlePart = post.ContentItem.TitlePart;
+                    TextField Category = FieldRender.Get<TextField>(itemContentParts, FieldType.TextField, "Category");
+                    TextField Discription = FieldRender.Get<TextField>(itemContentParts, FieldType.TextField, "Discription");
+                    string ImagePath = "";
+                    if (mediaPart.MediaParts.Count() > 0)
+                    {
+                        ImagePath = mediaPart.FirstMediaUrl;
+                    }
+                    var AutorotetPart = post.ContentItem.AutoroutePart;
+                    var url = AutorotetPart.Path;
+
+                    if ((i + 3) % 3 == 1)
+                    {
+                        @:<div class="row">
+                    }
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <figure class="blog-box">
+                            <a href="@Url.Content("~/")@url">
+                                <img src=@ImagePath alt="case-image" class="ie-fix">
+                                <figcaption>
+                                    <span class="blogbox_title">@Category.Value</span>
+                                    <h4>@TitlePart.Title</h4>
+                                    <p>@Discription.Value</p>
+                                </figcaption><!--figcaption-->
+                            </a>
+                        </figure><!--figure-->
+                    </div><!--col-lg-4-->
+                    if ((i + 3) % 3 == 0)
+                    {
+                        @:</div>
+                    }
+                    i++;
+                }
+            }
+        </div><!--container-->
+    </div> <!-- vlog_main -->
+</div><!-- End  Main Contain -->
+
+<div class="shinupboxmain">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="contain_shinupbox">
+                    @if (!AuthorizedFor(Orchard.Security.StandardPermissions.AccessAdminPanel))
+                    {
+                        <p>Sign up to start creating your own personalised campaigns</p>
+                        <a href="Users/Account/Register" class="btn btn-default btn-main btn-lg">SIGN UP FOR FREE</a>
+                    }
+                </div>
+            </div><!-- Col-xs-12 -->
+
+        </div><!-- Row -->
+    </div><!-- Container -->
+</div>

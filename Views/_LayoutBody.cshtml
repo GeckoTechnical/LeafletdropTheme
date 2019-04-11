@@ -1,0 +1,33 @@
+﻿@{ 
+    Func<dynamic, dynamic> Zone = x => Display(x);
+    Model.Id = "layout-wrapper";
+    var tag = Tag(Model, "div");
+}
+@tag.StartElement
+<div>
+    @if (Model.BeforeContent != null)
+            {
+        <div id="before-content">
+            @Zone(Model.BeforeContent)
+        </div>
+    }
+    @if (Model.Content != null)
+            {
+        <div id="content" class="group">
+            @Zone(Model.Content)
+        </div>
+    }
+    @if (Model.CustomDevelopment != null)
+            {
+        <div class="contain">
+            @Zone(Model.CustomDevelopment)
+        </div>
+    }
+    @if (Model.AfterContent != null)
+            {
+        <div id="after-content">
+            @Zone(Model.AfterContent)
+        </div>
+    }
+</div>
+@tag.EndElement

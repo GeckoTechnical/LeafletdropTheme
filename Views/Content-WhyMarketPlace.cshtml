@@ -1,0 +1,228 @@
+﻿@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@using Orchard.ContentPicker;
+@using Orchard.ContentManagement.MetaData;
+@using Orchard.ContentManagement.MetaData.Models;
+@using Orchard.ContentPicker.Settings;
+@using Orchard.ContentPicker.Fields;
+@{
+    if (Model.Title != null)
+    {
+        Layout.Title = Model.Title;
+    }
+
+    Model.Classes.Add("content-item");
+
+    var contentTypeClassName = ((string)Model.ContentItem.ContentType).HtmlClassify();
+    Model.Classes.Add(contentTypeClassName);
+
+    var tag = Tag(Model, "article");
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Model.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+
+    TextField pageHeaderTitle = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Header");
+    TextField pageHeaderSubTitle = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SubHeader");
+    TextField pagebodyText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Description");
+    TextField pageHeaderButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SignupButtonText");
+    BooleanField showHeaderButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "Showsignupbutton");
+
+    TextField firstContentAreaText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Section1Header");
+    TextField firstContentAreaDesc = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Section1Desription");
+    MediaLibraryPickerField firstContentAreaImage = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "Section1Image");
+
+    TextField secondContentAreaText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Section2Header");
+    TextField secondContentAreaDesc = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Section2Desription");
+    MediaLibraryPickerField secondContentAreaImage = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "Section2Image");
+
+    BooleanField showFooterButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    TextField pageFooterText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterHeader");
+    TextField pageFooterButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterSignupButtonText");
+
+    var contentpickerFields = FieldRender.Get<ContentPickerField>(contentParts, FieldType.ContentPickerField, "CaseStudies");
+    var contentItems = contentpickerFields.ContentItems;
+
+}
+@tag.StartElement
+<header>
+    @Display(Model.Header)
+    @if (Model.Meta != null)
+    {
+        <div class="metadata">
+            @Display(Model.Meta)
+        </div>
+    }
+</header>
+<div class="contain">
+    <div class="marketchoice">
+        <div class="contain_marketchoice">
+            <p>@pageHeaderTitle.Value</p>
+            <h1>@pageHeaderSubTitle.Value</h1>
+        </div><!--marketchoice-->
+    </div><!--marketchoice-->
+
+    <div class="brn_contain">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <p>@pagebodyText.Value</p>
+                </div>
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                @if (showHeaderButton.Value == true)
+                {
+                    <a href="@Url.Content("~/Users/Account/Register")" class="btn btn-default btn-main">@pageHeaderButtonText.Value</a>
+                }
+                </div>
+            </div>
+        </div>
+    </div><!---->
+    <!--screen to go here-->
+
+
+    <div class="benefits-main whymarketing">
+        <div class="list_index benefitsbg">
+            <div class="container-fluid">
+                <div class="row">
+                    @if (firstContentAreaImage.MediaParts.Count() > 0)
+                    {
+                        <div class="boximg_list">
+                            <img src="@firstContentAreaImage.FirstMediaUrl" alt="firstcontentarea">
+                        </div><!--boximg_list-->
+                    }
+                    <div class="featuresiurus-box">
+                        <div class="titel-box">
+                            <h4>@firstContentAreaText.Value</h4>
+                        </div>
+                        @Html.Raw(firstContentAreaDesc.Value)
+                    </div>
+
+                </div><!-- row -->
+
+            </div>
+
+        </div><!--list_index-->
+        <div class="list_index">
+            <div class="container-fluid">
+                <div class="row">
+                    @if (secondContentAreaImage.MediaParts.Count() > 0)
+                    {
+                        <div class="boximg_list visible-xs boxfechers_right">
+                            <img src="@secondContentAreaImage.FirstMediaUrl" alt="mobile-tab">
+                        </div><!--boximg_list-->
+                    }
+                    <div class="featuresiurus-box boxfechers_left">
+                        <div class="titel-box">
+                            <h4>@secondContentAreaText.Value</h4>
+                        </div>
+                        @Html.Raw(secondContentAreaDesc.Value)
+                    </div>
+
+
+                    @if (secondContentAreaImage.MediaParts.Count() > 0)
+                    {
+                        <div class="boximg_list hidden-xs boxfechers_right">
+                            <img src="@secondContentAreaImage.FirstMediaUrl" alt="mobile-tab">
+                        </div><!--boximg_list-->
+                    }
+
+
+
+                </div><!-- row -->
+
+            </div>
+
+        </div><!--list_index-->
+
+
+    </div><!--benefits-main-->
+    <!--End screen to go here-->
+    <div class="casestudiesmain">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                @if (contentItems.Count() > 0)
+                {
+                    <div class="col-xs-12">
+                        <div class="titel-fechers">
+                            <h3>Case Studies</h3>
+                        </div>
+                    </div>
+                    foreach (var items in contentItems)
+                    {
+                        var parts = items.Parts;
+                        var contentItemParts = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                        var titlePart = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.Core.Title.Models.TitlePart").ToList();
+                        var autoroutePart = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.Autoroute.Models.AutoroutePart").ToList();
+                        var contentspickerFields = FieldRender.Get<ContentPickerField>(contentItemParts, FieldType.ContentPickerField, "casestudies");
+                        var contentsItems = contentspickerFields.ContentItems;
+
+                        MediaLibraryPickerField BannerImage = FieldRender.Get<MediaLibraryPickerField>(contentItemParts, FieldType.MediaLibraryPickerField, "Media");
+                        MediaLibraryPickerField ListingPageImage = FieldRender.Get<MediaLibraryPickerField>(contentItemParts, FieldType.MediaLibraryPickerField, "ListingPageImage");
+
+                        TextField clientName = FieldRender.Get<TextField>(contentItemParts, FieldType.TextField, "ClientName");
+                        TextField caseStudy = FieldRender.Get<TextField>(contentItemParts, FieldType.TextField, "CaseStudy");
+                        var itmautopart = items.Content.AutoroutePart;
+                        var titlepart = items.Content.TitlePart;
+                        var url = itmautopart.Path;
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <a href="@Url.Content("~/")@url" class="casestudies-box">
+                                @if ( ListingPageImage.MediaParts.Count() > 0)
+                                {
+                                    <img src="@ListingPageImage.FirstMediaUrl" alt="logo" class="img-rounded" />
+                                }
+                                <span class="box_spn_casestudies">
+                                    <h5>
+                                        @if (clientName.Value != null)
+                                        {
+                                            @clientName.Value.ToUpper()
+                                        }
+                                    </h5>
+                                    <p>
+                                        <strong>"@titlepart.Title"</strong>
+                                    </p>
+                                    <span class="btn btn-default btn-main">READ CLIENT STORY</span>
+                                </span>
+                            </a>
+                            <!--figcaption-->
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="shinupboxmain">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="contain_shinupbox">
+                        <p>@pageFooterText.Value</p>
+                        @if (showFooterButton.Value == true)
+                        {
+                            <a href="@Url.Content("~/Users/Account/Register")" class="btn btn-default btn-main btn-lg">@pageFooterButtonText.Value</a>
+                        }
+                    </div>
+                </div><!-- Col-xs-12 -->
+            </div><!-- Row -->
+        </div><!-- Container -->
+    </div>
+</div>
+@if (Model.Footer != null)
+{
+    <footer>
+        @Display(Model.Footer)
+    </footer>
+}
+@tag.EndElement

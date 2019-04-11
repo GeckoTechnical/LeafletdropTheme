@@ -1,0 +1,142 @@
+﻿@using System.Security.Policy
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@using Orchard.ContentPicker.Fields;
+
+@{
+    if (Model.Title != null)
+    {
+        Layout.Title = Model.Title;
+    }
+
+    Model.Classes.Add("content-item");
+
+    var contentTypeClassName = ((string)Model.ContentItem.ContentType).HtmlClassify();
+    Model.Classes.Add(contentTypeClassName);
+
+    var tag = Tag(Model, "article");
+
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Model.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+    var contentpickerFields = FieldRender.Get<ContentPickerField>(contentParts, FieldType.ContentPickerField, "CaseStudies");
+    var contentItems = contentpickerFields.ContentItems;
+
+    var titlepart = Model.ContentItem.TitlePart;
+    var title = titlepart.Title;
+
+    var subtitle = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "CaseStudy");
+
+    var footerSignupHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterHeader");
+    var showsignUpButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    var signupButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterSignupButtonText");
+
+    var bannerImage = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "Media");
+}
+
+@tag.StartElement
+<header>
+    @Display(Model.Header)
+    @if (Model.Meta != null)
+    {
+        <div class="metadata">
+            @Display(Model.Meta)
+        </div>
+    }
+</header>
+
+<div class="container">
+    <div class="row">
+        @if (subtitle != null || titlepart.Title != null)
+        {
+            if (bannerImage.MediaParts.Count() > 0)
+            {
+                <div class="col-xs-12">
+                    <div class="banner-boxmiddeel case_detailsbanner" style="background-image:url(@bannerImage.FirstMediaUrl);">
+                        <span class="topshadow"></span>
+                        <div class="contain_bannerheader">
+                            <span> @subtitle.Value</span>
+                            <h1>"@title"</h1>
+                        </div><!--contain_bannerheader-->
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="row">
+        @if (Model.Content != null)
+        {
+            <div class="col-md-8 col-md-offset-2 col-xs-12">
+                <div class="contain_supportdetails supportdetails_withbanner">
+                    @Display(Model.Content)
+                </div>
+            </div>
+        }
+        <div class="col-xs-12 hidden-xs">
+            <hr>
+        </div>
+    </div>
+
+    @if (contentItems.Count() > 0)
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="titel-fechers">
+                    <h3>Other Case Studies</h3>
+                </div>
+            </div>
+            @foreach (var items in contentItems)
+            {
+                var parts = items.Parts;
+                var contentItemParts = ((List<Orchard.ContentManagement.ContentPart>)parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                var listingPageImage1 = FieldRender.Get<MediaLibraryPickerField>(contentItemParts, FieldType.MediaLibraryPickerField, "ListingPageImage");
+
+                var clientName = FieldRender.Get<TextField>(contentItemParts, FieldType.TextField, "ClientName");
+                var itmautopart = items.Content.AutoroutePart;
+                var titleparts = items.Content.TitlePart;
+
+                var url = itmautopart.Path;
+
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                    <a href="@Url.Content("~/")@url" class="casestudies-box">
+                        @if (listingPageImage1.MediaParts.Count() > 0)
+                        {
+                            <img src="@listingPageImage1.FirstMediaUrl" alt="logo" class="img-rounded" />
+                        }
+                        <span class="box_spn_casestudies">
+                            @if (clientName != null && clientName.Value != null)
+                            {
+                                <h5>@Convert.ToString(clientName.Value).Trim().ToUpper()</h5>
+                            }
+                            <p>
+                                <strong>"@titleparts.Title"</strong>
+                            </p>
+                            <span class="btn btn-default btn-main">READ CLIENT STORY</span>
+                        </span>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="shinupboxmain">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="contain_shinupbox">
+                    <p>@footerSignupHeader.Value</p>
+                    @if (showsignUpButton.Value == true)
+                    {
+                        <a href="@Url.Content("Users/Account/Register")" class="btn btn-default btn-main btn-lg">@signupButtonText.Value</a>
+                    }
+                </div>
+            </div> @*Col-xs-12*@ 
+        </div> @*Row*@ 
+    </div> @*Container*@ 
+</div>
+

@@ -1,0 +1,146 @@
+﻿@using Orchard.ContentPicker.Fields
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentPicker.Fields
+@using Orchard.Utility.Extensions;
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.ContentManagement;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+
+@{
+    //content support detail
+    if (Model.Title != null)
+    {
+        Layout.Title = Model.Title;
+    }
+
+    Model.Classes.Add("content-item");
+
+    var contentTypeClassName = ((string)Model.ContentItem.ContentType).HtmlClassify();
+    Model.Classes.Add(contentTypeClassName);
+
+    var contentItemss = (ContentItem)Model.ContentItem;
+    var Parts = Model.ContentItem.Parts;
+
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+
+    var titlepart = Model.ContentItem.TitlePart;
+    var Title = titlepart.Title;
+
+    TextField footerblockHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SupportFooterSectionHeader");
+    TextField footerblockDesc = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SupportFooterSectionDescription");
+    TextField getIntouchButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "GetinTouchButtonText");
+
+    BooleanField showGetinTouchButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowGetinTouchButton");
+
+    var tag = Tag(Model, "article");
+    var contentpickerFields = FieldRender.Get<ContentPickerField>(contentParts, FieldType.ContentPickerField, "Relatedtopics");
+    var contentItems = contentpickerFields.ContentItems;
+
+    TextField FooterSignupHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterHeader");
+    BooleanField showsignUpButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    TextField SignupButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FooterSignupButtonText");
+    TextField backToSupport = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "BackToSupport");
+
+}
+@tag.StartElement
+<header>
+    @Display(Model.Header)
+    @if (Model.Meta != null)
+    {
+        <div class="metadata">
+            @Display(Model.Meta)
+        </div>
+    }
+</header>
+<div class="contain">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-xs-12">
+                <div class="linkbackpage">
+                    <a href="@Url.Content("~/faqs")">&lt; @backToSupport.Value</a>
+                    <h1><strong>@Title</strong></h1>
+                </div>
+                <div class="contain_supportdetails">
+                    @Display(Model.Content)
+                </div>
+            </div>
+        </div>
+        @if (contentItems.Count() > 0)
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="titel-fechers">
+                        <h3>Related topics</h3>
+                    </div>
+                </div>
+                @foreach(var items in contentItems)
+                {
+                    var TitlePart = items.Content.TitlePart;
+                    var title = TitlePart.Title;
+
+                    var bodyPart = items.Content.BodyPart;
+                    var autorouteParts = items.Content.AutoroutePart;
+
+
+                    string bodyHtml = ((Orchard.Core.Common.Models.BodyPart)(bodyPart)).Text;
+                    var body = new HtmlString(Html.Excerpt(bodyHtml, 130).ToString().Replace(Environment.NewLine, "</p>" + Environment.NewLine + "<p>"));
+                    
+
+                    <div class="col-md-6">
+                        <div class="detailsbox">
+                            <a href="@Url.Content("~/")@autorouteParts.Path">
+                                <strong>@title</strong>
+                                <span>@body</span>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="formlooking">
+                <h3>@footerblockHeader.Value</h3>
+                <p>
+                    @footerblockDesc.Value
+                </p>
+            @if (showGetinTouchButton.Value == true) {
+                <a href="contact-us" class="btn btn-default btn-main bt-white">@getIntouchButtonText.Value</a>
+            }
+            </div><!--formlooking-->
+        </div>
+    </div><!-- row -->
+</div>
+<div class="shinupboxmain">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="contain_shinupbox">
+                    <p>@FooterSignupHeader.Value</p>
+                    @if (showsignUpButton.Value == true)
+                    { 
+                    <a href="@Url.Content("Users/Account/Register")" class="btn btn-default btn-main btn-lg">@SignupButtonText.Value</a>
+                    }
+                </div>
+            </div><!-- Col-xs-12 -->
+        </div><!-- Row -->
+    </div><!-- Container -->
+</div>
+@if (Model.Footer != null)
+{
+    <footer>
+        @Display(Model.Footer)
+    </footer>
+}
+@tag.EndElement

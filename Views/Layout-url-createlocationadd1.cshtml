@@ -1,0 +1,18 @@
+﻿
+@{ 
+    Style.Include("css/bootstrap-slider.min.css");
+    Script.Include("bootstrap-slider.min.js").AtFoot();
+}
+@Html.Partial("_LayoutHeader")
+@Html.Partial("_LayoutBody")
+@using (Script.Foot())
+{
+
+<script>
+    var slider = new Slider('#ex1', {
+        formatter: function (value) {
+            return 'Current value: ' + value;
+        }
+    });
+</script>
+}   

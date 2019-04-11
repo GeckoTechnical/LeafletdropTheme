@@ -1,0 +1,209 @@
+﻿@{
+    Func<dynamic, dynamic> Zone = x => Display(x);
+    Model.Id = "layout-wrapper";
+    var tag = Tag(Model, "div");
+}
+@Html.Partial("_LayoutHeader")
+
+@tag.StartElement
+@if (Model.Header != null)
+{
+    <div id="layout-header" class="group">
+        @Zone(Model.Header)
+    </div>
+}
+@if (Model.Navigation != null)
+{
+    @Zone(Model.Navigation)
+}
+
+@if (Model.Featured != null)
+{
+    <div id="layout-featured" class="group">
+        @Zone(Model.Featured)
+    </div>
+}
+@if (Model.BeforeMain != null)
+{
+    <div id="layout-before-main" class="group">
+        @Zone(Model.BeforeMain)
+    </div>
+}
+<div id="layout-main-container">
+    <div id="layout-main" class="group">
+
+        <div id="layout-content" class="group">
+            @if (Model.Messages != null)
+            {
+                if (Model.Messages.Items[0].Type == Orchard.UI.Notify.NotifyType.Error)
+                {
+                    <div id="messages" class="col-md-10 col-md-offset-1 col-xs-12 alert alert-danger">
+                        @Zone(Model.Messages)
+                    </div>
+                }
+                else
+                {
+                    <div id="messages">
+                        @Zone(Model.Messages)
+                    </div>
+
+                }
+            }
+            @if (Model.BeforeContent != null)
+            {
+                <div id="before-content">
+                    @Zone(Model.BeforeContent)
+                </div>
+            }
+            @if (Model.Content != null)
+            {
+                <div id="content" class="group">
+                    @Zone(Model.Content)
+
+                    <div id="alt-pay-alert">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-6 col-xs-offset-1 col-sm-offset-0">
+                                <div class="alert alert-dismissible">
+                                    <a href="/applying-for-alternative-payment-methods" target="_blank">Click here to view other ways to pay.</a>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.CustomDevelopment != null)
+            {
+                <div class="contain">
+                    @Zone(Model.CustomDevelopment)
+                </div>
+            }
+
+        </div>
+        <div class="contain">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 col-xs-12">
+                        @if (Model.AsideFirst != null)
+                        {
+                            <aside id="aside-first" class="aside-first group">
+                                @Zone(Model.AsideFirst)
+                            </aside>
+                        }
+                        @if (Model.AsideSecond != null)
+                        {
+                            <aside id="aside-second" class="aside-second">
+                                @Zone(Model.AsideSecond)
+                            </aside>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model.AfterContent != null)
+        {
+            if (WorkContext.CurrentUser == null)
+            {
+                <div id="after-content">
+                    @Zone(Model.AfterContent)
+                </div>
+            }
+            else
+            {
+
+                <div class="shinupboxmain">
+                </div>
+
+            }
+        }
+
+
+        @if (Model.AfterMain != null)
+        {
+            <div id="layout-after-main" class="group">
+                @Zone(Model.AfterMain)
+            </div>
+        }
+        @if (Model.TripelFirst != null || Model.TripelSecond != null || Model.TripelThird != null)
+        {
+            <div id="layout-tripel-container">
+                <div id="layout-tripel" class="group">
+                    @if (Model.TripelFirst != null)
+                    {
+                        <div id="tripel-first">
+                            @Zone(Model.TripelFirst)
+                        </div>
+                    }
+                    @if (Model.TripelSecond != null)
+                    {
+                        <div id="tripel-second">
+                            @Zone(Model.TripelSecond)
+                        </div>
+                    }
+                    @if (Model.TripelThird != null)
+                    {
+                        <div id="tripel-third">
+                            @Zone(Model.TripelThird)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        <div id="layout-footer" class="group">
+            <footer id="footer">
+                <div id="footer-quad" class="group">
+                    @if (Model.FooterQuadFirst != null)
+                    {
+                        <div id="footer-quad-first">
+                            @Zone(Model.FooterQuadFirst)
+                        </div>
+                    }
+                    @if (Model.FooterQuadSecond != null)
+                    {
+                        <div id="footer-quad-second">
+                            @Zone(Model.FooterQuadSecond)
+                        </div>
+                    }
+                    @if (Model.FooterQuadThird != null)
+                    {
+                        <div id="footer-quad-third">
+                            @Zone(Model.FooterQuadThird)
+                        </div>
+                    }
+                    @if (Model.FooterQuadFourth != null)
+                    {
+                        <div id="footer-quad-fourth">
+                            @Zone(Model.FooterQuadFourth)
+                        </div>
+                    }
+                </div>
+            </footer>
+        </div>
+        @if (Model.Footer != null)
+        {
+            @Zone(Model.Footer)
+        }
+    </div>
+
+</div>
+
+<script>
+    window.onload = function () {
+        if (window.location.pathname === "/payment") {
+            var ele = document.getElementById("alt-pay-alert");
+            ele.style.display = 'block';
+        }
+    };
+</script>
+@tag.EndElement
+
+@{
+    WorkContext.Layout.Head.Add(New.Analytics(), "10");
+}
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMF5CZ3"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->

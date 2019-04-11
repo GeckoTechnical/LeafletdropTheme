@@ -1,0 +1,53 @@
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+
+@{
+    List<Orchard.ContentManagement.ContentPart> contentParts = new List<Orchard.ContentManagement.ContentPart>();
+    foreach (var item in Model.Items)
+    {
+        var contentPart = ((List<Orchard.ContentManagement.ContentPart>)item.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+        if (contentPart != null)
+        {
+            contentParts.AddRange(contentPart);
+        }
+    }
+    TextField header = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "FAQHeader");
+}
+
+<div class="main_calculation">
+    <div class="container">
+        @Display(Model.Content)
+        <div class="col-xs-12">
+            <div class="faq_main">
+                <div class="titel-fechers">
+                    <h3>@header.Value</h3>
+                </div>
+                @foreach (var faq in Model.Items)
+                {
+                    var contentPart = ((List<Orchard.ContentManagement.ContentPart>)faq.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                    if (contentPart != null)
+                    {
+                        contentParts.AddRange(contentPart);
+                    }
+                    TextField Subheaders = FieldRender.Get<TextField>(contentPart, FieldType.TextField, "FAQSubHeader");
+                    TextField Desc = FieldRender.Get<TextField>(contentPart, FieldType.TextField, "FAQDescription");
+                    <div class="box_faq">
+                        <h4>@Subheaders.Value</h4>
+                        <p>
+                            @Desc.Value
+                        </p>
+                    </div>
+                }
+            </div>
+
+        </div><!-- col-xs-12 -->
+
+    </div>
+    <!-- ROW -->
+</div>

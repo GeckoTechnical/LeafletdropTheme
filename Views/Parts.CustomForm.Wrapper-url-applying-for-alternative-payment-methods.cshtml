@@ -1,0 +1,107 @@
+﻿
+@using Orchard.ContentManagement;
+@using Orchard.Widgets.Models;
+@{
+	dynamic editor = Model.Editor;
+
+	if (TempData.ContainsKey("CustomFormWidget.InvalidCustomFormState"))
+	{
+		editor = TempData["CustomFormWidget.InvalidCustomFormState"];
+	}
+
+	// remove default Save/Publish buttons
+	editor.Zones["Sidebar"].Items.Clear();
+}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			@using (Html.BeginFormAntiForgeryPost(Url.Action("Create", "Item", new { area = "Orchard.CustomForms", id = Model.ContentItem.Id, @class = "form_main" })))
+			{
+				@*@Html.ValidationSummary();*@
+				@Html.Hidden("returnUrl", Request.RawUrl);
+				<div class="contact-info-box">
+					<h4 class="header_form">Message Us</h4>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Name_Text" shape-id="13">Name:*</label>
+						<input class="form-control" id="AlternativePayApplication_Name_Text" placeholder="Your name" name="AlternativePayApplication.Name.Text" type="text" value="" required="required">
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Telephone_Text" shape-id="15">Contact Number:*</label>
+						<input class="form-control" id="AlternativePayApplication_Telephone_Text" placeholder="Your number" name="AlternativePayApplication.Telephone.Text" type="text" value="" required="required">
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Email_Text" shape-id="14">Email:*</label>
+						<input class="form-control" id="AlternativePayApplication_Email_Text" placeholder="Your email" name="AlternativePayApplication.Email.Text" type="email" value="" required="required">
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_ConpanyName_Text" shape-id="16">Company Name:*</label>
+						<input class="form-control" placeholder="Company Name" id="AlternativePayApplication_CompanyName_Text" name="AlternativePayApplication.CompanyName.Text" type="text" value="" required="required" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_TradingAs_Text" shape-id="16">Trading As (If Applicable):</label>
+						<input class="form-control" placeholder="Trading As" id="AlternativePayApplication_TradingAs_Text" name="AlternativePayApplication.TradingAs.Text" type="text" value="" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_CompanyRegNumber_Text" shape-id="16">Company Registration Number (If Applicable):</label>
+						<input class="form-control" placeholder="Company Registration Number" id="AlternativePayApplication_CompanyRegNumber_Text" name="AlternativePayApplication.CompanyRegNumber.Text" type="text" value="" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Activity_Text" shape-id="16">Main Activity Of Company:*</label>
+						<input class="form-control" placeholder="Main activity of Company?" id="AlternativePayApplication_Activity_Text" name="AlternativePayApplication.Activity.Text" type="text" value="" required="required" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_InvoicingAddress_Text" shape-id="16">Invoicing Address:*</label>
+						<input class="form-control" placeholder="Invoicing Address?" id="AlternativePayApplication_InvoicingAddress_Text" name="AlternativePayApplication.InvoicingAddress.Text" type="text" value="" required="required" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_RegisteredAddress_Text" shape-id="16">Registered Address (If Different From Invoicing Address)</label>
+						<input class="form-control" placeholder="Registered Address " id="AlternativePayApplication_RegisteredAddress_Text" name="AlternativePayApplication.RegisteredAddress.Text" type="text" value="" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_MainTelephone_Text" shape-id="16">Main Telephone Number:*</label>
+						<input class="form-control" placeholder="Main Telephone Number" id="AlternativePayApplication_MainTelephone_Text" name="AlternativePayApplication.MainTelephone.Text" type="text" value="" required="required" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_FinanceName_Text" shape-id="16">Finance Contact Name:*</label>
+						<input class="form-control" placeholder="Finance Contact Name" id="AlternativePayApplication_FinanceName_Text" name="AlternativePayApplication.FinanceName.Text" type="text" value="" required="required" />
+					</div>
+					<div class="form-group" style="display: none;">
+						<label for="AlternativePayApplication_PaymentTerms_Text" shape-id="16">Payment Terms:</label>
+						<input class="form-control" placeholder="PaymentTerms" id="AlternativePayApplication_PaymentTerms_Text" name="AlternativePayApplication.PaymentTerms.Text" type="text" value="" />
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Terms_Text" shape-id="16">Payment Terms:*</label>
+						<select class="form-control" id="AlternativePayApplication_Terms_Selector" name="AlternativePayApplication.Terms.Selector" required="required">
+							<option value="" disabled selected hidden>Please select an option</option>
+							<option value="14 Days">14 Days Payment Terms Required</option>
+							<option value="21 Days">21 Days Payment Terms Required</option>
+							<option value="Other">Other Payment Terms Required</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="AlternativePayApplication_Comments_Text" shape-id="16">Comments:</label>
+						<input class="form-control" placeholder="Comments" id="AlternativePayApplication_Comments_Text" name="AlternativePayApplication.Comments.Text" type="text" value="" />
+					</div>
+					<button type="submit" id="submit-button" class="btn btn-default btn-main btn-lg" name="submit.Save" value="submit.Save">@T("SEND MESSAGE")</button>
+				</div>
+			}
+
+		</div>
+	</div>
+</div>
+
+<script
+	src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+	crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	$(function () {
+		var selector = $('#AlternativePayApplication_Terms_Selector');
+		var textbox = $('#AlternativePayApplication_PaymentTerms_Text');
+
+		selector.change(function () {
+			textbox.val(selector.val());
+		});
+	});
+</script>

@@ -1,8 +1,7 @@
-Name: LeafletdropTheme
-Author: The Orchard Team
-Website: http://www.orchardproject.net
-Description: Description for the theme
-Version: 1.0
-BaseTheme: TheThemeMachine
-# todo: provide tags
-# Tags: Classic, Serif
+﻿Name: Yourdrop
+Author: jowall, mibach, loudej, heskew
+Description: Orchard Theme Machine is a flexible multi-zone theme that provides a solid foundation to build your site. It features 20 collapsible widget zones and is flexible enough to cover a wide range of layouts.
+Version: 1.10.2
+Tags: Awesome
+Website: http://orchardproject.net
+Zones: Header, Navigation, BeforeContent, Content ,CustomDevelopment , AsideFirst,AsideSecond, AfterContent ,Footer

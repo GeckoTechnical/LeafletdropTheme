@@ -1,0 +1,58 @@
+﻿@using Orchard.ContentManagement;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+@using Orchard.ContentPicker.Fields;
+
+@{
+	var item = Model;
+	var contentItems = (ContentItem)Model.ContentItem;
+	var Parts = Model.ContentItem.Parts;
+	var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+
+	InputField Telephone = FieldRender.Get<InputField>(contentParts, FieldType.InputField, "Telephone");
+	TextField Email = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Email");
+	MediaLibraryPickerField mediaPath = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "Image");
+	//var Telephone = Model.ContentItem.Parts[2].Fields[1].Value;
+	//var Email = Model.ContentItem.Parts[2].Fields[2].Value;
+	//var mediaPath = "";
+	//if (item.ContentItem.Parts[2].Fields[0].MediaParts.Count > 0)
+	//{
+	//    mediaPath = item.ContentItem.Parts[2].Fields[0].MediaParts[0].MediaUrl;
+	//}
+}
+<div class="col-sm-6 col-xs-12" style="margin-bottom: 10px;">
+	<a href="https://calendly.com/leafletdrop" class="btn btn-default btn-main" target="_blank" rel="noopener noreferrer">Want us to call you?</a>
+</div>
+
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+	<div class="getin-touch-box">
+		<h4 class="headtr_getintouch hidden-xs">get in touch Directly:</h4>
+		@if (mediaPath.MediaParts.Count() > 0)
+		{
+			<div class="img_contact hidden-xs">
+				<img src="@mediaPath.FirstMediaUrl" alt="mobile-tab">
+			</div><!--img_contact-->
+		}
+		<div class="contact_boxinfo">
+			<div class="contact-info">
+				<label class="form-group">Tel:</label>
+				<a href="tel:@Telephone.Value" itemprop="telephone">@Telephone.Value</a>
+			</div>
+
+			<div class="contact-info">
+				<label class="form-group" itemprop="email">Email:</label>
+				<a href="mailto:@Email.Value">@Email.Value</a>
+			</div>
+		</div><!--contact_boxinfo-->
+	</div>
+</div>
+@*@Display(Model.Content)*@

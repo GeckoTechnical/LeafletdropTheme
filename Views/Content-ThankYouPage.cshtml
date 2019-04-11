@@ -1,0 +1,130 @@
+﻿@using Orchard.Utility.Extensions;
+@using Orchard.ContentPicker.Fields
+@using Orchard.Utility.Extensions;
+@using Orchard.Utility.Extensions;
+@using Orchard.ContentManagement;
+@using Orchard.Core;
+@using Orchard.ContentManagement;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using Orchard.Core.Title.Models;
+@using Orchard.Blogs.Models;
+@using Orchard.MediaLibrary.Fields;
+@using CommonUtility;
+
+@{
+    if (Model.Title != null)
+    {
+        Layout.Title = Model.Title;
+    }
+
+    Model.Classes.Add("content-item");
+
+    var contentTypeClassName = ((string)Model.ContentItem.ContentType).HtmlClassify();
+    Model.Classes.Add(contentTypeClassName);
+
+    var tag = Tag(Model, "article");
+
+    var Parts = Model.ContentItem.Parts;
+
+    var contentParts = ((List<Orchard.ContentManagement.ContentPart>)Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+    var TitlePart = Model.ContentItem.TitlePart;
+    var title = TitlePart.Title;
+
+    TextField AdWordsCodeString = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "AdWordsCodeString");
+
+    TextField ThankPageHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "ThankPageHeader");
+    TextField ThankPageSubHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "ThankPageSubHeader");
+
+    BooleanField ShowReturnButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowReturnButton");
+    BooleanField ShowLink = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowLinkBelowReturnButton");
+
+    MediaLibraryPickerField mediaPath = FieldRender.Get<MediaLibraryPickerField>(contentParts, FieldType.MediaLibraryPickerField, "ThankPageImage");
+
+    LinkField ReturnButtonTextandurl = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "ReturnButtonTextandurl");
+    LinkField LinkBelowReturnButton = FieldRender.Get<LinkField>(contentParts, FieldType.LinkField, "LinkBelowReturnButton");
+
+
+
+}
+@tag.StartElement
+<header>
+    @Display(Model.Header)
+    @if (Model.Meta != null)
+    {
+        <div class="metadata">
+            @Display(Model.Meta)
+        </div>
+    }
+</header>
+@*@Display(Model.Content)*@
+<div class="contain">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                @if (mediaPath.MediaParts.Count() > 0)
+                {
+                    <div class="banner-boxmiddeel case_detailsbanner" style="background-image:url('@mediaPath.FirstMediaUrl'); background-position-x: center;">
+                        <span class="topshadow"></span>
+                        <div class="contain_bannerheader">
+                            <h1>@ThankPageHeader.Value</h1>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="box_contact">
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="contact-text">
+                                <p>@ThankPageSubHeader.Value</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"><hr></div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            @if (ShowReturnButton.Value == true)
+                            {
+                                <div class="form-group">
+                                    <a href="@ReturnButtonTextandurl.Value" class="btn btn-default btn-main btn-lg" shape-id="5"> @ReturnButtonTextandurl.Text </a>
+                                </div>
+                            }
+                            @if (ShowLink.Value == true)
+                            {
+                                <div class="form-group">
+                                    <a href="@LinkBelowReturnButton.Value" class="linkbox_form" shape-id="0">@LinkBelowReturnButton.Text </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Session["FinalOrderPrice"] != null && !string.IsNullOrWhiteSpace(Session["FinalOrderPrice"].ToString()))
+{
+    <script>
+        var finalOrderPrice = @Html.Raw(Session["FinalOrderPrice"]);
+    </script>
+}
+else
+{
+    <script>
+        var finalOrderPrice = 0;
+    </script>
+}
+
+@MvcHtmlString.Create(AdWordsCodeString.Value);
+
+@if (Model.Footer != null)
+{
+    <footer>
+        @Display(Model.Footer)
+    </footer>
+}
+@tag.EndElement

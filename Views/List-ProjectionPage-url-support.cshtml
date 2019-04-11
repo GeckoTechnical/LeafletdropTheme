@@ -1,0 +1,132 @@
+@using System.Linq;
+@using Orchard.Fields.Fields;
+@using Orchard.Core.Common.Fields;
+@using CommonUtility;
+@{
+    var itm = Model;
+    var listingParts = Model.ContentItem.Parts;
+    var Header = Model.ContentItem.TitlePart;
+    List<Orchard.ContentManagement.ContentPart> contentParts = new List<Orchard.ContentManagement.ContentPart>();
+    foreach (var item in Model.Items)
+    {
+        var contentPart = ((List<Orchard.ContentManagement.ContentPart>)item.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+        if (contentPart != null)
+        {
+            contentParts.AddRange(contentPart);
+        }
+    }
+
+    var projectionParts = ((List<Orchard.ContentManagement.ContentPart>)listingParts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+
+    TextField headerDesc = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "Description");
+    TextField footerSectionHeader = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SupportFooterSectionHeader");
+    TextField footerSectionDescription = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "SupportFooterSectionDescription");
+    BooleanField showGetinTouchButton = FieldRender.Get<BooleanField>(contentParts, FieldType.BooleanField, "ShowGetinTouchButton");
+    TextField getinTouchButtonText = FieldRender.Get<TextField>(contentParts, FieldType.TextField, "GetinTouchButtonText");
+
+    TextField FooterSignupHeader = FieldRender.Get<TextField>(projectionParts, FieldType.TextField, "FooterHeader");
+    BooleanField showsignUpButton = FieldRender.Get<BooleanField>(projectionParts, FieldType.BooleanField, "ShowsignupButtoninFooter");
+    TextField SignupButtonText = FieldRender.Get<TextField>(projectionParts, FieldType.TextField, "FooterSignupButtonText");
+
+}
+<div class="contain">
+    <div class="page-header">
+        <h1> @Header.Title </h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="supportearch">
+                    <p>
+                        @headerDesc.Value
+                    </p>
+                    @{
+                        EnumerationField supportCategoriesOptions = FieldRender.Get<EnumerationField>(contentParts, FieldType.EnumerationField, "supportCategories");
+                        Dictionary<String, String> opt = supportCategoriesOptions.PartFieldDefinition.Settings;
+                        string[] options = (!String.IsNullOrWhiteSpace(opt["EnumerationFieldSettings.Options"])) ? opt["EnumerationFieldSettings.Options"].Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None) : new string[] { T("Select an option").ToString() };
+                        <form class="formssupport">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="supportcategories">
+                                    @for (int i = 0; i < options.Length; i++)
+                                    {
+                                        <option value="@options[i]">@options[i]</option>
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    }
+                </div><!--supportearch-->
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                var itemContentParts = ((List<Orchard.ContentManagement.ContentPart>)item.ContentItem.Parts).Where(p => p.GetType().FullName == "Orchard.ContentManagement.ContentPart").ToList();
+                var TitlePart = item.ContentItem.TitlePart;
+                var BodyPart = item.ContentItem.BodyPart;
+                var AutorotetPart = item.ContentItem.AutoroutePart;
+                Orchard.ContentManagement.ContentItem contentItem = Model.ContentPart.ContentItem;
+                string bodyHtml = BodyPart.Text.ToString();
+                var body = new HtmlString(Html.Excerpt(bodyHtml, 130).ToString().Replace(Environment.NewLine, "</p>" + Environment.NewLine + "<p>"));
+                EnumerationField supportCategories = FieldRender.Get<EnumerationField>(itemContentParts, FieldType.EnumerationField, "supportCategories");
+                <div class="col-md-6 supportCategories" data-category="@supportCategories.Value">
+                    <div class="detailsbox">
+                        <a href="@Url.Content("~/")@AutorotetPart.Path">
+                            <strong>@TitlePart.Title</strong>
+                            <span>@body</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="formlooking">
+                    <h3>@footerSectionHeader.Value</h3>
+                    <p>@footerSectionDescription.Value</p>
+                    @if (showGetinTouchButton.Value == true)
+                    {
+                        <a href="contact-us" class="btn btn-default btn-main bt-white">@getinTouchButtonText.Value</a>
+                    }
+                </div><!--formlooking-->
+            </div>
+        </div><!-- row -->
+    </div>
+</div>
+<div class="shinupboxmain">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="contain_shinupbox">
+                    <p>@FooterSignupHeader.Value</p>
+                    @if (showsignUpButton.Value == true)
+                    {
+                        <a href="@Url.Content("Users/Account/Register")" class="btn btn-default btn-main btn-lg">@SignupButtonText.Value</a>
+                    }
+                </div>
+            </div><!-- Col-xs-12 -->
+        </div><!-- Row -->
+    </div><!-- Container -->
+</div>
+@using (Script.Foot())
+{
+    <script>
+        $("#supportcategories").on("change", function () {
+            changeList($(this).val());
+        });
+
+        function changeList(category) {
+            $('.supportCategories').hide();
+
+            $('.supportCategories').each(function() {
+                var thisDataCategory = $(this).attr('data-category');
+                if (thisDataCategory != null && thisDataCategory != undefined && typeof(thisDataCategory) != "undefined") {
+                    if (thisDataCategory.trim().toLowerCase().indexOf(category.trim().toLowerCase()) != -1) {
+                        $(this).show();
+                    }
+                }
+            });
+        }
+    </script>
+}
